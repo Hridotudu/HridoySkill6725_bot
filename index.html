@@ -487,7 +487,7 @@
   // `users` is now an object where keys are Telegram User Names and values are user objects
   let users = JSON.parse(localStorage.getItem('users')) || {}; 
 
-  let referrerUserName = null; // Stores the potential referrer's Telegram User Name obtained from URL
+  let referrerChatId = null; // Stores the potential referrer's Telegram Chat ID obtained from URL
 
   let currentResetUserName = null; // Stores the Telegram User Name for the password reset process
   let generatedResetCode = null; // Stores the generated code for password reset
@@ -663,18 +663,23 @@
       referredUsers: [] 
     };
 
-    // If there's a referrer (by Telegram UserName)
+    // If there's a referrer (by Telegram Chat ID)
     let referralMessagePart = "";
-    if (referrerUserName && telegramUserName !== referrerUserName) { 
-        if (users[referrerUserName]) {
-            users[telegramUserName].referredBy = referrerUserName; 
-            users[referrerUserName].balance += 0.020; 
-            users[referrerUserName].totalReferrals++; 
-            users[referrerUserName].referredUsers.push(telegramUserName); 
-            referralMessagePart = `\nReferred by: ${users[referrerUserName].fullName} (UserName: @${referrerUserName})\nReferral bonus paid to referrer.`;
-            saveUserData(); 
-        } else {
-            referralMessagePart = `\nReferrer UserName (@${referrerUserName}) not found or invalid.`;
+    if (referrerChatId) { 
+        let referrerFound = false;
+        for (const userNameKey in users) {
+            if (users[userNameKey].telegramChatId === referrerChatId && telegramUserName !== userNameKey) { // Ensure user doesn't refer themselves
+                users[telegramUserName].referredBy = users[userNameKey].telegramUserName; 
+                users[userNameKey].balance += 0.020; 
+                users[userNameKey].totalReferrals++; 
+                users[userNameKey].referredUsers.push(telegramUserName); 
+                referralMessagePart = `\nReferred by: ${users[userNameKey].fullName} (Chat ID: ${referrerChatId})\nReferral bonus paid to referrer.`;
+                referrerFound = true;
+                break;
+            }
+        }
+        if (!referrerFound) {
+            referralMessagePart = `\nReferrer Chat ID (${referrerChatId}) not found or invalid.`;
         }
     } else {
         referralMessagePart = `\nNo referrer.`;
@@ -745,14 +750,18 @@
    * Checks if a user was previously logged in on page load and restores the session.
    */
   function checkLoginStatus() {
-    // Check for referrer Telegram UserName in URL
+    // Check for referrer Telegram Chat ID in URL
     const refParam = getUrlParameter('startapp'); 
     if (refParam && refParam.startsWith('ref_')) { 
-        referrerUserName = decodeURIComponent(refParam.substring(4)).toLowerCase().replace('@', ''); 
-        console.log(`Potential referrer Telegram Username found in URL: @${referrerUserName}`);
-        sessionStorage.setItem('tempReferrerUserName', referrerUserName); 
+        referrerChatId = decodeURIComponent(refParam.substring(4)); // Chat ID is numeric, no .toLowerCase().replace('@', '')
+        if (!isNaN(referrerChatId) && referrerChatId.length >= 5) { // Basic validation
+             console.log(`Potential referrer Telegram Chat ID found in URL: ${referrerChatId}`);
+             sessionStorage.setItem('tempReferrerChatId', referrerChatId); 
+        } else {
+            referrerChatId = null; // Invalid Chat ID
+        }
     } else {
-        referrerUserName = sessionStorage.getItem('tempReferrerUserName'); 
+        referrerChatId = sessionStorage.getItem('tempReferrerChatId'); 
     }
 
     const loggedInUser = localStorage.getItem('loggedInUser');
@@ -910,21 +919,21 @@
   }
 
   /**
-   * Displays the referral modal with the user's unique Telegram UserName referral link
+   * Displays the referral modal with the user's unique Telegram Chat ID referral link
    * directly to the Telegram bot with the 'startapp' parameter.
    */
   function showReferralLink() {
-      if (currentUserIdentifier && users[currentUserIdentifier] && users[currentUserIdentifier].telegramUserName) {
+      if (currentUserIdentifier && users[currentUserIdentifier] && users[currentUserIdentifier].telegramChatId) {
           const botUsername = TELEGRAM_BOT_USERNAME; 
-          const referrerTelegramUserName = users[currentUserIdentifier].telegramUserName;
+          const referrerTelegramChatId = users[currentUserIdentifier].telegramChatId;
 
-          const referralLink = `https://t.me/${botUsername}?startapp=ref_${encodeURIComponent(referrerTelegramUserName)}`;
+          const referralLink = `https://t.me/${botUsername}?startapp=ref_${encodeURIComponent(referrerTelegramChatId)}`;
           
           document.getElementById('referralLinkInput').value = referralLink;
           document.getElementById('referralModal').style.display = 'flex';
           document.getElementById('copyStatus').innerText = '';
       } else {
-          showFlashMessage("Please log in and ensure your Telegram User Name is set to generate a referral link.");
+          showFlashMessage("Please log in and ensure your Telegram Chat ID is set to generate a referral link.");
       }
   }
 
