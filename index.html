@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>❤️Hridoy Skill❤️</title>
+  <style>
+    /* Global Variables for Colors (Dark/Light Mode) */
+    :root {
+      --bg-color: #f0f2f5;
+      --text-color: #000;
+      --card-bg: #fff;
+      --header-bg: linear-gradient(90deg, #007bff, #00c6ff);
+      --button-bg: linear-gradient(45deg, #007bff, #00c6ff);
+      --link-color: #007bff;
+      --modal-bg: rgba(0, 0, 0, 0.7); /* Modal overlay background */
+      --modal-content-bg: #fff;
+    }
+    /* Dark Mode Styles */
+    body.dark {
+      --bg-color: #121212;
+      --text-color: #fff;
+      --card-bg: #1e1e1e;
+      --header-bg: linear-gradient(90deg, #333, #555);
+      --button-bg: linear-gradient(45deg, #444, #777);
+      --link-color: #00c6ff;
+      --modal-content-bg: #2a2a2a;
+    }
+
+    /* Base Body Styles */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding-bottom: 80px; /* Space for fixed navigation bar */
+      transition: background 0.3s, color 0.3s; /* Smooth transition for dark/light mode */
+      -webkit-font-smoothing: antialiased; /* Better font rendering on mobile */
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Header Styles */
+    header {
+      background: var(--header-bg);
+      color: white;
+      padding: 15px; /* Slightly reduced padding for mobile */
+      text-align: center;
+      font-size: 18px; /* Slightly reduced font size for mobile */
+      font-weight: bold;
+      position: relative;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Added subtle shadow for depth */
+    }
+
+    /* Dark Mode Toggle Button */
+    .toggle-mode {
+      position: absolute;
+      top: 12px;
+      right: 15px; /* Adjusted right spacing */
+      font-size: 13px; /* Slightly smaller font */
+      background: #fff3; /* Semi-transparent white */
+      padding: 6px 10px; /* Adjusted padding */
+      border-radius: 20px;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
+      -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+    }
+
+    /* Main Container for Content */
+    .container {
+      max-width: 500px; /* Max width for larger screens */
+      margin: auto; /* Center the container */
+      padding: 15px; /* Reduced overall padding for mobile */
+    }
+
+    /* Section Visibility (for tab switching) */
+    .section { display: none; }
+    .section.active { display: block; } /* Show active section */
+
+    /* Card Styles */
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px; /* Slightly reduced margin between cards */
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Soft shadow for cards */
+    }
+
+    /* Button Styles */
+    .btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      background: var(--button-bg);
+      border: none;
+      border-radius: 30px; /* Rounded buttons */
+      cursor: pointer;
+      margin-top: 10px;
+      transition: transform 0.2s ease; /* Smooth hover effect */
+      -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+    }
+    .btn:hover { transform: scale(1.02); } /* Slight scale on hover */
+    .btn:active { transform: scale(0.98); } /* Slight scale on active (tap) */
+
+    /* Fixed Navigation Bar */
+    nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      display: flex;
+      justify-content: space-around;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1); /* Shadow above nav */
+      display: none; /* Hidden by default, shown after login */
+      z-index: 1000; /* Ensure nav is on top of other content */
+    }
+    nav button {
+      flex: 1; /* Equal width for all buttons */
+      padding: 12px;
+      border: none;
+      background: none;
+      font-weight: bold;
+      color: var(--text-color);
+      font-size: 15px; /* Slightly smaller font for nav items */
+      -webkit-tap-highlight-color: transparent;
+    }
+    nav button:active { background: rgba(0,0,0,0.05); } /* Light background on active */
+
+    /* Info/Status Messages */
+    .info {
+      font-weight: bold;
+      color: green;
+      margin-top: 10px;
+      font-size: 14px; /* Slightly smaller font for info text */
+      text-align: center; /* Center align info messages */
+    }
+
+    /* Input Field Styles */
+    input[type="text"], input[type="file"], input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px; /* Slightly smaller font for inputs */
+      box-sizing: border-box; /* Ensures padding doesn't increase width */
+      background: var(--bg-color); /* Input background adapts to dark/light mode */
+      color: var(--text-color); /* Input text color adapts to dark/light mode */
+    }
+    input[type="file"] {
+      padding: 8px; /* Smaller padding for file input */
+    }
+
+    /* Username Display in Dashboard */
+    #usernameDisplay {
+        font-size: 18px;
+        font-weight: bold;
+        color: var(--link-color); /* Matches header/button gradient start color */
+        margin-bottom: 15px;
+        text-align: center;
+        padding-top: 10px; /* Add some space above the text */
+    }
+    
+    /* Small Screen Adjustments (Optional, but good practice for very small phones) */
+    @media (max-width: 320px) {
+        header {
+            font-size: 16px;
+            padding: 12px;
+        }
+        .toggle-mode {
+            font-size: 12px;
+            padding: 5px 8px;
+        }
+        .btn {
+            font-size: 14px;
+            padding: 12px;
+        }
+        nav button {
+            font-size: 14px;
+            padding: 10px;
+        }
+        .card {
+            padding: 15px;
+        }
+    }
+
+    /* --- Modal Styles --- */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1001; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: var(--modal-bg); /* Black w/ opacity */
+      justify-content: center; /* Center content horizontally */
+      align-items: center; /* Center content vertically */
+    }
+
+    .modal-content {
+      background-color: var(--modal-content-bg);
+      margin: 15% auto; /* 15% from the top and centered */
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      width: 90%; /* Responsive width */
+      max-width: 400px; /* Max width for larger screens */
+      text-align: center;
+      position: relative; /* For close button positioning */
+      color: var(--text-color);
+    }
+
+    .close-button {
+      color: #aaa;
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close-button:hover,
+    .close-button:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    #referralLinkInput {
+      width: calc(100% - 20px); /* Adjust for padding */
+      padding: 10px;
+      margin: 15px 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      background: var(--bg-color);
+      color: var(--text-color);
+      text-align: center;
+      cursor: text; /* Allow selection */
+    }
+
+    .copy-btn {
+      background: linear-gradient(45deg, #28a745, #218838); /* Green gradient for copy button */
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+      transition: transform 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+      margin-top: 10px;
+    }
+    .copy-btn:hover { transform: scale(1.02); }
+    .copy-btn:active { transform: scale(0.98); }
+
+    /* Flash message for copy confirmation */
+    .flash-message {
+        position: fixed;
+        bottom: 90px; /* Above the nav bar */
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #28a745; /* Green for success */
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        z-index: 1002; /* Above modal */
+        font-size: 14px;
+        white-space: nowrap; /* Prevent text wrapping */
+    }
+    .flash-message.show {
+        opacity: 1;
+    }
+
+    /* Auth tab switcher */
+    .auth-switcher {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 20px;
+        background: var(--bg-color);
+        border-radius: 10px;
+        padding: 5px;
+        box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+    }
+    .auth-switcher button {
+        flex: 1;
+        padding: 10px 15px;
+        border: none;
+        background: none;
+        font-weight: bold;
+        color: var(--text-color);
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background 0.3s, color 0.3s;
+    }
+    .auth-switcher button.active {
+        background: var(--button-bg);
+        color: white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+<header>
+  Developer:Hridoy Skill
+  <span class="toggle-mode" onclick="toggleDarkMode()"> ☀️ </span>
+</header>
+
+<div class="container">
+  <div id="auth" class="section active">
+    <div class="auth-switcher">
+        <button id="showRegisterBtn" onclick="showAuthTab('register')">Register</button>
+        <button id="showLoginBtn" class="active" onclick="showAuthTab('login')">Login</button>
+    </div>
+
+    <div id="registerFormCard" class="card" style="display:none;">
+      <h3>Register</h3>
+      <p>Create your new account.</p>
+      <input type="text" id="registerFullName" placeholder="Full Name" required>
+      <input type="text" id="registerTelegramUid" placeholder="10-digit Telegram User ID" required maxlength="10">
+      <input type="email" id="registerGmail" placeholder="Gmail Address" required>
+      <input type="password" id="registerPassword" placeholder="Password (at least 8 characters)" required minlength="8">
+      <button class="btn" onclick="handleRegister()">Register</button>
+    </div>
+
+    <div id="loginFormCard" class="card">
+      <h3>Login</h3>
+      <p>Log in to your account.</p>
+      <input type="text" id="loginUsername" placeholder="Gmail or 10-digit Telegram User ID" required>
+      <input type="password" id="loginPassword" placeholder="Password" required>
+      <button class="btn" onclick="handleLogin()">Login</button>
+      <button class="btn" onclick="showResetPasswordModal()">Reset Password</button>
+    </div>
+  </div>
+
+  <div id="appSections" style="display: none;">
+    <p id="usernameDisplay"></p>
+    <div id="home" class="section">
+      <div class="card">
+        <h3>Dashboard</h3>
+        <p>Balance: <strong id="balance">$0.000</strong></p>
+       
+        <p>Total Ads Watched: <strong id="adsWatched">0</strong></p>
+        <p>Daily Ads Watched: <strong id="dailyAdsWatched">0</strong></p>
+        <p>Tasks Completed: <strong id="tasksCompleted">0</strong></p>
+        <p>Total Referrals: <strong id="totalReferrals">0</strong></p> 
+        
+        <img src="https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1752401954/w0d4yapthokp30zvta1j.jpg" alt="Meditation Image" style="max-width:100%; height:auto; display:block; margin: 15px auto;">
+        <button class="btn" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <div id="earn" class="section">
+      <div class="card">
+        <h3>Watch Ads</h3>
+        <button class="btn" onclick="watchAd()">Watch Ad & Earn</button>
+        <p style="margin-top: 10px; font-weight: bold; text-align: center;">Daily Ads: <strong id="dailyAdsWatchedEarn">0</strong></p>
+        <p class="info" id="ad-status">Click the button to watch ad</p>
+        <p class="info" id="ad-target-message" style="color:orange;"></p>
+      </div>
+      <div class="card">
+        <h3>Tasks</h3>
+        <p style="margin-top: 10px; color: #888; text-align: center; font-size: 13px;">Complete a task, then submit a screenshot below for verification to earn!</p>
+        <button class="btn" onclick="taskWithRedirect('https://t.me/Hridoy_Skill')">Join Telegram</button>
+        <button class="btn" onclick="taskWithRedirect('https://youtube.com/@hridoy_skill_0.69?si=GfXezqZBlqsXYWVc')">Subscribe YouTube</button>
+        <button class="btn" onclick="taskWithRedirect('https://www.facebook.com/Hridoy.tudu.69')">Like Facebook Page</button>
+        <button class="btn" onclick="taskWithRedirect('https://instagram.com')">Follow Instagram</button>
+        <button class="btn" onclick="taskWithRedirect('https://youtu.be/Nqg8N0_RY_g?si=QFzA-UZbj6YxkIF9')">Share Post</button>
+        
+        <button class="btn" onclick="showReferralLink()">Refer & Earn</button>
+
+        <hr style="margin-top:20px; border: 0; border-top: 1px solid #eee;">
+
+        <h4>Add Screenshots for Task Completion</h4>
+        <input type="text" id="screenshotUserName" placeholder="Enter Your Gmail or Telegram User ID (for verification)">
+        <input type="file" id="screenshotUpload" accept="image/*">
+        <button class="btn" onclick="submitScreenshot()">Submit Screenshot</button>
+        <p class="info" id="screenshot-status"></p>
+      </div>
+    </div>
+
+    <div id="withdraw" class="section">
+      <div class="card">
+        <h3>Withdraw</h3>
+        <p>Minimum: $0.50, Maximum: $2.00</p>
+        <input id="withdrawAmount" type="text" placeholder="Enter Amount">
+        <input id="withdrawMethod" type="text" placeholder="Payment Method or Account">
+        <button class="btn" onclick="submitWithdraw()">Submit Request</button>
+      </div>
+    </div>
+
+    <div id="contact" class="section">
+      <div class="card">
+        <h3>Contact</h3>
+        <button class="btn" onclick="window.open('https://t.me/Hridoy_Tudu')">Chat with Admin</button>
+        <button class="btn" onclick="window.open('https://t.me/Hridoy_Tudu')">Contact Owner</button>
+        <button class="btn" onclick="window.open('https://youtu.be/Nqg8N0_RY_g?si=QFzA-UZbj6YxkIF9')">Watch Help Video</button>
+      </div>
+    </div>
+
+    <div id="profile" class="section">
+      <div class="card">
+        <h3>Profile</h3>
+        <p>Full Name: <strong id="profileFullName">N/A</strong></p>
+        <p>Telegram UID: <strong id="profileTelegramUid">N/A</strong></p>
+        <p>Gmail: <strong id="profileGmail">N/A</strong></p>
+        <p>Total Ads: <strong id="adsWatchedProfile">0</strong></p>
+        <p>Daily Ads: <strong id="dailyAdsWatchedProfile">0</strong></p>
+        <p>Total Tasks: <strong id="tasksCompletedProfile">0</strong></p>
+        <p>Total Withdraw: <strong id="withdrawTotal">$0.00</strong></p>
+        <p>Total Referrals: <strong id="totalReferralsProfile">0</strong></p> 
+        <p style="margin-top:10px;color:#888;">❤️Developer:Hridoy Skill❤️</p>
+        <img src="https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1752401954/w0d4yapthokp30zvta1j.jpg" alt="Meditation Image" style="max-width:100%; height:auto; display:block; margin: 15px auto;">
+      </div>
+    </div>
+  </div> </div>
+
+<nav>
+  <button onclick="showTab('home')">Home</button>
+  <button onclick="showTab('earn')">Earn</button>
+  <button onclick="showTab('withdraw')">Withdraw</button>
+  <button onclick="showTab('contact')">Contact</button>
+  <button onclick="showTab('profile')">Profile</button>
+</nav>
+
+<div id="referralModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button" onclick="closeReferralModal()">×</span>
+    <h3>Your Referral Link</h3>
+    <p style="font-size: 14px; color: #888;">Share this link to invite friends and earn!</p>
+    <input type="text" id="referralLinkInput" value="" readonly>
+    <button class="copy-btn" onclick="copyReferralLink()">Copy Link</button>
+    <p id="copyStatus" style="font-size: 13px; color: green; margin-top: 10px;"></p>
+  </div>
+</div>
+
+<div id="resetPasswordModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" onclick="closeResetPasswordModal()">×</span>
+        <h3>Reset Password</h3>
+        <div id="resetEmailStep">
+            <p>Enter your registered Gmail to receive a verification code.</p>
+            <input type="email" id="resetGmailInput" placeholder="Your Gmail Address" required>
+            <button class="btn" onclick="sendResetCode()">Send Code</button>
+        </div>
+        <div id="resetCodeStep" style="display:none;">
+            <p>Enter the 6-digit code provided by the admin.</p>
+            <input type="text" id="resetCodeInput" placeholder="Verification Code" required maxlength="6">
+            <button class="btn" onclick="verifyResetCode()">Verify Code</button>
+        </div>
+        <div id="resetNewPasswordStep" style="display:none;">
+            <p>Enter your new password.</p>
+            <input type="password" id="newPasswordInput" placeholder="New Password" required>
+            <input type="password" id="confirmNewPasswordInput" placeholder="Confirm New Password" required>
+            <button class="btn" onclick="setNewPassword()">Set New Password</button>
+        </div>
+        <p class="info" id="resetStatus" style="color:red;"></p>
+    </div>
+</div>
+
+
+<div id="flashMessage" class="flash-message"></div>
+
+<script src="//libtl.com/sdk.js" data-zone="9506403" data-sdk="show_9506403"></script>
+
+<script>
+  // --- Configuration Variables ---
+  // Replace with your Telegram bot token
+  const TELEGRAM_BOT_TOKEN = '8116143152:AAGPvHsPWy7VQZuIJoO4_ZpVcwA_6kbRCjw'; 
+  // Your Telegram Chat ID to receive admin notifications
+  const TELEGRAM_CHAT_ID = '5965219037'; 
+  // Your Telegram bot's username (without @)
+  const TELEGRAM_BOT_USERNAME = 'HridoySkill6725_bot'; 
+
+  const MIN_WITHDRAW = 0.50; // Minimum withdrawal amount
+  const MAX_WITHDRAW = 2.00; // Maximum withdrawal amount
+
+  // --- Global State Variables ---
+  let currentUserEmail = null; // Stores the currently logged-in user's Gmail
+  // `users` is now an object where keys are Gmails and values are user objects
+  let users = JSON.parse(localStorage.getItem('users')) || {}; 
+
+  let referrerUID = null; // Stores the potential referrer's UID obtained from URL
+
+  let currentResetGmail = null; // Stores the Gmail for the password reset process
+  let generatedResetCode = null; // Stores the generated code for password reset
+
+  // --- Utility Functions ---
+
+  /**
+   * Parses URL parameters.
+   * @param {string} name - The name of the URL parameter to retrieve.
+   * @returns {string} The value of the parameter, or an empty string if not found.
+   */
+  function getUrlParameter(name) {
+      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+      var results = regex.exec(location.search);
+      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+  }
+
+  /**
+   * Saves the current user's data to the global 'users' object and then to localStorage.
+   * This function should be called whenever user data (balance, stats, etc.) changes.
+   */
+  function saveUserData() {
+    if (currentUserEmail && users[currentUserEmail]) {
+      // Update the current user's data in the `users` object
+      users[currentUserEmail] = {
+        ...users[currentUserEmail], // Keep existing user properties like name, uid, password
+        balance: parseFloat(document.getElementById('balance').innerText.replace('$', '')),
+        adsWatched: parseInt(document.getElementById('adsWatched').innerText),
+        dailyAdsWatched: parseInt(document.getElementById('dailyAdsWatched').innerText),
+        tasksCompleted: parseInt(document.getElementById('tasksCompleted').innerText),
+        totalWithdraw: parseFloat(document.getElementById('withdrawTotal').innerText.replace('$', '')),
+        totalReferrals: parseInt(document.getElementById('totalReferrals').innerText),
+      };
+    }
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+
+  /**
+   * Loads a specific user's data from the 'users' object and updates the UI.
+   * @param {string} email - The Gmail address to load data for.
+   */
+  function loadUserData(email) {
+    if (users[email]) {
+      const userData = users[email];
+      document.getElementById("balance").innerText = `$${userData.balance.toFixed(3)}`;
+      document.getElementById("adsWatched").innerText = userData.adsWatched;
+      document.getElementById("tasksCompleted").innerText = userData.tasksCompleted;
+      document.getElementById("withdrawTotal").innerText = `$${userData.totalWithdraw.toFixed(3)}`;
+      document.getElementById("totalReferrals").innerText = userData.totalReferrals || 0;
+      
+      // Update profile section
+      document.getElementById("profileFullName").innerText = userData.fullName || 'N/A';
+      document.getElementById("profileTelegramUid").innerText = userData.telegramUid || 'N/A';
+      document.getElementById("profileGmail").innerText = userData.gmail || 'N/A';
+
+      // Handle daily ad reset
+      const now = new Date().getTime();
+      const lastReset = userData.lastAdResetDate ? new Date(userData.lastAdResetDate).getTime() : 0;
+      const twentyFourHours = 24 * 60 * 60 * 1000;
+
+      if (now - lastReset >= twentyFourHours) {
+        users[email].dailyAdsWatched = 0;
+        users[email].lastAdResetDate = new Date().toISOString(); // Set new reset date
+      }
+      document.getElementById("dailyAdsWatched").innerText = users[email].dailyAdsWatched;
+      document.getElementById("dailyAdsWatchedEarn").innerText = users[email].dailyAdsWatched;
+
+    } else {
+      // Should not happen if checkLoginStatus works correctly, but as a fallback
+      document.getElementById("balance").innerText = `$0.000`;
+      document.getElementById("adsWatched").innerText = 0;
+      document.getElementById("dailyAdsWatched").innerText = 0;
+      document.getElementById("dailyAdsWatchedEarn").innerText = 0;
+      document.getElementById("tasksCompleted").innerText = 0;
+      document.getElementById("withdrawTotal").innerText = `$0.000`;
+      document.getElementById("totalReferrals").innerText = 0;
+      document.getElementById("profileFullName").innerText = 'N/A';
+      document.getElementById("profileTelegramUid").innerText = 'N/A';
+      document.getElementById("profileGmail").innerText = 'N/A';
+    }
+    updateProfileStats(); // Also update the profile section's display
+  }
+
+  /**
+   * Validates if the input is a valid Gmail address.
+   * @param {string} email - The email string to validate.
+   * @returns {boolean} True if valid Gmail, false otherwise.
+   */
+  function isValidGmail(email) {
+      const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+      return gmailRegex.test(email);
+  }
+
+  /**
+   * Sends a message to the Telegram bot.
+   * @param {string} message - The text message to send.
+   */
+  async function sendTelegramMessage(message) {
+      try {
+          const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message })
+          });
+          const result = await response.json();
+          if (!result.ok) {
+              console.error("Failed to send Telegram message:", result.description);
+          }
+      } catch (error) {
+          console.error("Error sending Telegram message:", error);
+      }
+  }
+
+  /**
+   * Displays a flash message at the bottom of the screen.
+   * @param {string} message - The message to display.
+   * @param {number} [duration=3000] - The duration in milliseconds for the message to be visible.
+   */
+  function showFlashMessage(message, duration = 3000) {
+      const flashMessageDiv = document.getElementById('flashMessage');
+      flashMessageDiv.innerText = message;
+      flashMessageDiv.classList.add('show');
+      setTimeout(() => {
+          flashMessageDiv.classList.remove('show');
+      }, duration);
+  }
+
+  /**
+   * Toggles dark mode on and off.
+   */
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark');
+  }
+
+  // --- Authentication Functions ---
+
+  /**
+   * Handles user registration.
+   */
+  async function handleRegister() {
+    const fullName = document.getElementById('registerFullName').value.trim();
+    const telegramUid = document.getElementById('registerTelegramUid').value.trim();
+    const gmail = document.getElementById('registerGmail').value.trim().toLowerCase();
+    const password = document.getElementById('registerPassword').value;
+
+    if (!fullName || !telegramUid || !gmail || !password) {
+      showFlashMessage("Please fill in all fields for registration.");
+      return;
+    }
+    if (telegramUid.length !== 10 || isNaN(telegramUid)) {
+      showFlashMessage("Please enter a valid 10-digit Telegram User ID.");
+      return;
+    }
+    if (!isValidGmail(gmail)) {
+      showFlashMessage("Please enter a valid Gmail address (e.g., yourname@gmail.com).");
+      return;
+    }
+    if (password.length < 8) {
+      showFlashMessage("Password must be at least 8 characters long.");
+      return;
+    }
+
+    // Check if Gmail or UID already exists
+    for (const userEmail in users) {
+        if (users[userEmail].gmail === gmail) {
+            showFlashMessage("This Gmail address is already registered. Please log in or use a different Gmail.");
+            return;
+        }
+        if (users[userEmail].telegramUid === telegramUid) {
+            showFlashMessage("This Telegram User ID is already registered. Please log in or use a different UID.");
+            return;
+        }
+    }
+
+    // Register new user
+    users[gmail] = {
+      fullName: fullName,
+      telegramUid: telegramUid,
+      gmail: gmail,
+      password: password, // For simplicity. In production, hash passwords!
+      balance: 0.000,
+      adsWatched: 0,
+      dailyAdsWatched: 0,
+      lastAdResetDate: new Date().toISOString(),
+      tasksCompleted: 0,
+      totalWithdraw: 0.000,
+      totalReferrals: 0,
+      referredUsers: [] // List of Gmails of users referred by this user
+    };
+
+    // If there's a referrer (by UID), apply referral bonus
+    let referralMessagePart = "";
+    if (referrerUID && telegramUid !== referrerUID) { // Ensure the new user is not referring themselves
+        let referrerEmailFound = null;
+        for (const email in users) {
+            if (users[email].telegramUid === referrerUID) {
+                referrerEmailFound = email;
+                break;
+            }
+        }
+
+        if (referrerEmailFound && users[referrerEmailFound]) {
+            users[gmail].referredBy = referrerUID; // Store the referrer's UID for the new user
+            users[referrerEmailFound].balance += 0.020; // Referrer gets $0.020
+            users[referrerEmailFound].totalReferrals++; // Increment referrer's totalReferrals
+            users[referrerEmailFound].referredUsers.push(gmail); // Add new user's Gmail to referrer's list
+            referralMessagePart = `\nReferred by: ${users[referrerEmailFound].fullName} (UID: ${referrerUID})\nReferral bonus paid to referrer.`;
+            saveUserData(); // Save referrer's updated data immediately
+        } else {
+            referralMessagePart = `\nReferrer UID (${referrerUID}) not found or invalid.`;
+        }
+    } else {
+        referralMessagePart = `\nNo referrer.`;
+    }
+
+    saveUserData(); // Save new user's data (and referrer's if updated)
+
+    // Send registration notification to Telegram (without password)
+    const registrationMessage = `🎉 New User Registered! 🎉\n\nFull Name: ${fullName}\nTelegram UID: ${telegramUid}\nGmail: ${gmail}${referralMessagePart}\n\nWelcome new user!`;
+    await sendTelegramMessage(registrationMessage); // Send notification
+
+    showFlashMessage("Registration successful! Please log in.");
+    showAuthTab('login'); // Switch to login tab after successful registration
+    // Clear registration fields
+    document.getElementById('registerFullName').value = '';
+    document.getElementById('registerTelegramUid').value = '';
+    document.getElementById('registerGmail').value = '';
+    document.getElementById('registerPassword').value = '';
+  }
+
+  /**
+   * Handles user login.
+   */
+  function handleLogin() {
+    const username = document.getElementById('loginUsername').value.trim().toLowerCase(); // Can be Gmail or UID
+    const password = document.getElementById('loginPassword').value;
+
+    let userFound = false;
+    let userEmailToLogin = null;
+
+    // Try to find user by Gmail
+    if (isValidGmail(username)) {
+        if (users[username] && users[username].password === password) {
+            userFound = true;
+            userEmailToLogin = username;
+        }
+    } 
+    // Try to find user by Telegram UID
+    else if (username.length === 10 && !isNaN(username)) {
+        for (const email in users) {
+            if (users[email].telegramUid === username && users[email].password === password) {
+                userFound = true;
+                userEmailToLogin = email; // Store the actual Gmail associated with this UID
+                break;
+            }
+        }
+    }
+
+    if (userFound) {
+      currentUserEmail = userEmailToLogin;
+      localStorage.setItem('loggedInUser', currentUserEmail);
+      loadUserData(currentUserEmail);
+      // Update usernameDisplay to show Full Name and UID
+      document.getElementById('usernameDisplay').innerText = `Welcome, ${users[currentUserEmail].fullName}! (UID: ${users[currentUserEmail].telegramUid})`;
+      document.getElementById('auth').style.display = 'none';
+      document.getElementById('appSections').style.display = 'block';
+      document.querySelector('nav').style.display = 'flex';
+      showTab('home');
+      showFlashMessage("Login successful!");
+      // Clear login fields
+      document.getElementById('loginUsername').value = '';
+      document.getElementById('loginPassword').value = '';
+    } else {
+      showFlashMessage("Invalid username (Gmail/UID) or password. Please register if you don't have an account.");
+    }
+  }
+
+  /**
+   * Logs out the current user, saves their data, and returns to the authentication screen.
+   */
+  function logout() {
+    if (confirm("Are you sure you want to log out?")) {
+      saveUserData();
+      currentUserEmail = null;
+      localStorage.removeItem('loggedInUser');
+      document.getElementById('auth').style.display = 'block';
+      document.getElementById('appSections').style.display = 'none';
+      document.querySelector('nav').style.display = 'none';
+      showAuthTab('login'); // Default back to login tab
+      showFlashMessage("You have been logged out successfully.");
+    }
+  }
+
+  /**
+   * Checks if a user was previously logged in on page load and restores the session.
+   */
+  function checkLoginStatus() {
+    // Check for referrer UID in URL
+    const refParam = getUrlParameter('startapp'); // Get 'startapp' parameter from Telegram bot URL
+    if (refParam && refParam.startsWith('ref_') && refParam.length === 14 && !isNaN(refParam.substring(4))) { // e.g., 'ref_1234567890'
+        referrerUID = decodeURIComponent(refParam.substring(4)); // Extract UID after 'ref_'
+        console.log(`Potential referrer UID found in URL: ${referrerUID}`);
+        sessionStorage.setItem('tempReferrerUID', referrerUID); // Store temporarily
+    } else {
+        referrerUID = sessionStorage.getItem('tempReferrerUID'); // Retrieve from session storage if not in URL
+    }
+
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (loggedInUser && users[loggedInUser]) { // Check if user exists in our stored data
+      currentUserEmail = loggedInUser;
+      loadUserData(currentUserEmail);
+      // Update usernameDisplay to show Full Name and UID
+      document.getElementById('usernameDisplay').innerText = `Welcome, ${users[currentUserEmail].fullName}! (UID: ${users[currentUserEmail].telegramUid})`;
+      document.getElementById('auth').style.display = 'none';
+      document.getElementById('appSections').style.display = 'block';
+      document.querySelector('nav').style.display = 'flex';
+      showTab('home');
+    } else {
+      document.getElementById('auth').style.display = 'block';
+      document.getElementById('appSections').style.display = 'none';
+      document.querySelector('nav').style.display = 'none';
+      showAuthTab('login'); // Show login by default if not logged in
+    }
+  }
+
+  /**
+   * Toggles between Register and Login forms.
+   * @param {string} tabId - 'register' or 'login'.
+   */
+  function showAuthTab(tabId) {
+      document.getElementById('registerFormCard').style.display = 'none';
+      document.getElementById('loginFormCard').style.display = 'none';
+      document.getElementById('showRegisterBtn').classList.remove('active');
+      document.getElementById('showLoginBtn').classList.remove('active');
+
+      if (tabId === 'register') {
+          document.getElementById('registerFormCard').style.display = 'block';
+          document.getElementById('showRegisterBtn').classList.add('active');
+      } else {
+          document.getElementById('loginFormCard').style.display = 'block';
+          document.getElementById('showLoginBtn').classList.add('active');
+      }
+  }
+
+  // --- App Section & Stats Display Functions ---
+
+  /**
+   * Shows the selected main application tab and hides others.
+   * @param {string} tabId - The ID of the tab to show (e.g., 'home', 'earn').
+   */
+  function showTab(tabId) {
+    document.querySelectorAll('#appSections .section').forEach(s => s.classList.remove('active'));
+    if (document.getElementById('appSections').style.display === 'block') {
+      document.getElementById(tabId).classList.add('active');
+    }
+    updateProfileStats();
+  }
+
+  /**
+   * Updates the balance, ads watched, tasks completed, and referrals displays for the current user.
+   */
+  function updateStatsDisplay() {
+    const userData = users[currentUserEmail];
+    if (!userData) return; // Guard against no user logged in
+
+    document.getElementById("balance").innerText = `$${userData.balance.toFixed(3)}`;
+    document.getElementById("adsWatched").innerText = userData.adsWatched;
+    document.getElementById("dailyAdsWatched").innerText = userData.dailyAdsWatched;
+    document.getElementById("dailyAdsWatchedEarn").innerText = userData.dailyAdsWatched;
+    document.getElementById("tasksCompleted").innerText = userData.tasksCompleted;
+    document.getElementById("totalReferrals").innerText = userData.totalReferrals;
+    updateProfileStats();
+  }
+
+  /**
+   * Updates the profile tab's specific statistics.
+   */
+  function updateProfileStats() {
+    const userData = users[currentUserEmail];
+    if (!userData) return; // Guard against no user logged in
+
+    document.getElementById("profileFullName").innerText = userData.fullName || 'N/A';
+    document.getElementById("profileTelegramUid").innerText = userData.telegramUid || 'N/A';
+    document.getElementById("profileGmail").innerText = userData.gmail || 'N/A';
+    document.getElementById("adsWatchedProfile").innerText = userData.adsWatched;
+    document.getElementById("dailyAdsWatchedProfile").innerText = userData.dailyAdsWatched;
+    document.getElementById("tasksCompletedProfile").innerText = userData.tasksCompleted;
+    document.getElementById("withdrawTotal").innerText = `$${userData.totalWithdraw.toFixed(3)}`;
+    document.getElementById("totalReferralsProfile").innerText = userData.totalReferrals;
+
+    const adTargetMessage = document.getElementById("ad-target-message");
+    if (userData.dailyAdsWatched < 100) {
+        adTargetMessage.innerText = `You can watch ${100 - userData.dailyAdsWatched} more ads today.`;
+    } else {
+        adTargetMessage.innerText = `You have watched ${userData.dailyAdsWatched} ads for today.`;
+    }
+  }
+
+  // --- Core Application Features ---
+
+  /**
+   * Simulates watching an ad and awards balance.
+   * Integrates with an external ad SDK.
+   */
+  function watchAd() {
+    if (!currentUserEmail) { showFlashMessage("Please log in to watch ads."); return; }
+
+    const status = document.getElementById("ad-status");
+    const adTargetMessage = document.getElementById("ad-target-message");
+
+    if (typeof show_9506403 === "function") {
+      show_9506403();
+    } else {
+      showFlashMessage("Ads not loaded. Please ensure you have an active internet connection or try refreshing the page.");
+      return;
+    }
+
+    if (users[currentUserEmail].dailyAdsWatched >= 100) {
+      status.innerText = "Your daily ad limit is reached. Please try again tomorrow.";
+      adTargetMessage.innerText = `You have watched ${users[currentUserEmail].dailyAdsWatched} ads for today.`;
+      return;
+    }
+
+    let sec = 15;
+    status.innerText = `Please watch... ${sec}s`;
+    let timer = setInterval(() => {
+      sec--;
+      if (sec > 0) {
+        status.innerText = `Please watch... ${sec}s`;
+      } else {
+        clearInterval(timer);
+        users[currentUserEmail].balance += 0.005;
+        users[currentUserEmail].adsWatched++;
+        users[currentUserEmail].dailyAdsWatched++;
+        users[currentUserEmail].lastAdResetDate = new Date().toISOString();
+        updateStatsDisplay();
+        status.innerText = `Earned $0.005!`;
+        saveUserData();
+
+        if (users[currentUserEmail].dailyAdsWatched < 100) {
+            adTargetMessage.innerText = `You can watch ${100 - users[currentUserEmail].dailyAdsWatched} more ads today.`
+        }
+      }
+    }, 1000);
+  }
+
+  /**
+   * Handles task completion with a redirect.
+   * @param {string} url - The URL to redirect the user to for the task.
+   */
+  function taskWithRedirect(url) {
+    if (!currentUserEmail) { showFlashMessage("Please log in to complete tasks."); return; }
+
+    if (url.startsWith('http://googleusercontent.com/youtube.com/')) {
+        const videoId = url.split('/').pop();
+        console.log(`Attempting to open YouTube video with ID: ${videoId}`);
+    }
+    window.open(url, '_blank');
+    showFlashMessage("Task opened. Please complete the task and submit a screenshot for verification to earn!");
+  }
+
+  /**
+   * Displays the referral modal with the user's unique UID referral link
+   * directly to the Telegram bot with the 'startapp' parameter.
+   */
+  function showReferralLink() {
+      if (currentUserEmail && users[currentUserEmail] && users[currentUserEmail].telegramUid) {
+          // Ensure your Telegram bot's username is correct here
+          const botUsername = TELEGRAM_BOT_USERNAME; 
+          const referrerTelegramUid = users[currentUserEmail].telegramUid;
+
+          // Create the referral link with the Telegram bot's 'startapp' parameter
+          // format: https://t.me/your_bot_username?startapp=ref_YOUR_UID
+          const referralLink = `https://t.me/${botUsername}?startapp=ref_${encodeURIComponent(referrerTelegramUid)}`;
+          
+          document.getElementById('referralLinkInput').value = referralLink;
+          document.getElementById('referralModal').style.display = 'flex';
+          document.getElementById('copyStatus').innerText = '';
+      } else {
+          showFlashMessage("Please log in and ensure your Telegram User ID is set to generate a referral link.");
+      }
+  }
+
+  /**
+   * Hides the referral modal.
+   */
+  function closeReferralModal() {
+      document.getElementById('referralModal').style.display = 'none';
+  }
+
+  /**
+   * Copies the referral link from the input field to the clipboard.
+   */
+  function copyReferralLink() {
+      const referralLinkInput = document.getElementById('referralLinkInput');
+      referralLinkInput.select();
+      referralLinkInput.setSelectionRange(0, 99999);
+
+      navigator.clipboard.writeText(referralLinkInput.value).then(() => {
+          document.getElementById('copyStatus').innerText = "Link copied successfully!";
+          showFlashMessage("Referral link copied!");
+          setTimeout(() => {
+              document.getElementById('copyStatus').innerText = '';
+              closeReferralModal();
+          }, 1500);
+      }).catch(err => {
+          document.getElementById('copyStatus').innerText = "Failed to copy. Copy manually.";
+          showFlashMessage("Failed to copy link!");
+          console.error('Failed to copy referral link: ', err);
+      });
+  }
+
+  /**
+   * Handles submitting a screenshot for task verification to Telegram.
+   */
+  async function submitScreenshot() {
+    if (!currentUserEmail) { showFlashMessage("Please log in to submit screenshots."); return; }
+
+    const userNameForScreenshot = document.getElementById("screenshotUserName").value.trim().toLowerCase();
+    const screenshotFile = document.getElementById("screenshotUpload").files;
+    const screenshotStatus = document.getElementById("screenshot-status");
+
+    if (!userNameForScreenshot || screenshotFile.length === 0) {
+      showFlashMessage("Please enter your Gmail or Telegram User ID for verification and select a screenshot image.");
+      return;
+    }
+
+    // Check if the entered username matches the current user's Gmail or UID
+    const currentUserData = users[currentUserEmail];
+    let isMatch = false;
+    if (userNameForScreenshot === currentUserData.gmail || userNameForScreenshot === currentUserData.telegramUid) {
+        isMatch = true;
+    }
+
+    if (!isMatch) {
+        showFlashMessage("The Gmail or Telegram User ID entered for screenshot verification must match your logged-in account.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('chat_id', TELEGRAM_CHAT_ID);
+    formData.append('caption', `New task screenshot submitted:\nUser: ${currentUserData.fullName} (${currentUserData.gmail})\nUID: ${currentUserData.telegramUid}\nSubmitted ID on screenshot: ${userNameForScreenshot}`);
+    formData.append('photo', screenshotFile[0]);
+
+    screenshotStatus.innerText = "Sending screenshot...";
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+      if (result.ok) {
+        screenshotStatus.innerText = "Screenshot sent successfully! Waiting for verification...";
+        showFlashMessage("Screenshot sent!");
+        
+        let sec = 10;
+        let timer = setInterval(() => {
+          sec--;
+          if (sec > 0) {
+            screenshotStatus.innerText = `Verifying... ${sec}s`;
+          } else {
+            clearInterval(timer);
+            users[currentUserEmail].balance += 0.005;
+            users[currentUserEmail].tasksCompleted++;
+            updateStatsDisplay();
+            screenshotStatus.innerText = `Verification complete! $0.005 added to your balance.`;
+            showFlashMessage(`Verification complete! $0.005 added to your balance.`);
+            document.getElementById("screenshotUserName").value = '';
+            document.getElementById("screenshotUpload").value = '';
+            saveUserData();
+          }
+        }, 1000);
+
+      } else {
+        screenshotStatus.innerText = "Failed to send screenshot. Please try again. Error: " + (result.description || "Unknown");
+        showFlashMessage("Failed to send screenshot!");
+        console.error("Telegram API error:", result);
+      }
+    } catch (error) {
+      console.error("Error submitting screenshot:", error);
+      screenshotStatus.innerText = "An error occurred while submitting the screenshot. Please check your internet connection.";
+      showFlashMessage("Network error!");
+    }
+  }
+
+  /**
+   * Handles user withdrawal requests, sends details to Telegram, resets balance, and resets referrals.
+   */
+  async function submitWithdraw() {
+    if (!currentUserEmail) { showFlashMessage("Please log in to withdraw funds."); return; }
+
+    const amount = parseFloat(document.getElementById("withdrawAmount").value);
+    const method = document.getElementById("withdrawMethod").value;
+    const userData = users[currentUserEmail];
+
+    if (!amount || !method) {
+      showFlashMessage("Please fill all fields correctly.");
+      return;
+    }
+    if (amount <= 0) {
+        showFlashMessage("Withdrawal amount must be greater than zero.");
+        return;
+    }
+    if (amount < MIN_WITHDRAW) {
+        showFlashMessage(`Minimum withdrawal amount is $${MIN_WITHDRAW.toFixed(2)}.`);
+        return;
+    }
+    if (amount > MAX_WITHDRAW) {
+        showFlashMessage(`Maximum withdrawal amount is $${MAX_WITHDRAW.toFixed(2)}.`);
+        return;
+    }
+    if (amount > userData.balance) {
+      showFlashMessage("Insufficient balance. You cannot withdraw more than your current balance.");
+      return;
+    }
+
+    const message = `New Withdraw Request from user: ${userData.fullName} (${currentUserEmail})\nAmount: $${amount.toFixed(3)}\nPayment Method: ${method}\nBalance Before: $${userData.balance.toFixed(3)}\nTotal Referrals Before: ${userData.totalReferrals}`;
+
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message })
+      });
+
+      const result = await response.json();
+      if (result.ok) {
+        userData.balance -= amount; // Deduct withdrawn amount from balance
+        userData.totalWithdraw += amount; // Add to total withdrawn amount
+        userData.totalReferrals = 0; // Reset total referrals after withdrawal
+        userData.referredUsers = []; // Clear the list of referred users
+        
+        updateStatsDisplay();
+        showFlashMessage("Withdraw request sent successfully! Your balance has been updated and referral count reset.");
+        document.getElementById("withdrawAmount").value = '';
+        document.getElementById("withdrawMethod").value = '';
+        saveUserData();
+      } else {
+        showFlashMessage("Failed to send withdraw request. Please try again.");
+        console.error("Telegram API error:", result);
+      }
+    } catch (error) {
+      console.error("Error submitting withdraw request:", error);
+      showFlashMessage("An error occurred while submitting the withdraw request.");
+    }
+  }
+
+  // --- Password Reset Logic ---
+
+  function showResetPasswordModal() {
+      document.getElementById('resetPasswordModal').style.display = 'flex';
+      document.getElementById('resetEmailStep').style.display = 'block';
+      document.getElementById('resetCodeStep').style.display = 'none';
+      document.getElementById('resetNewPasswordStep').style.display = 'none';
+      document.getElementById('resetStatus').innerText = '';
+      document.getElementById('resetGmailInput').value = '';
+      document.getElementById('resetCodeInput').value = '';
+      document.getElementById('newPasswordInput').value = '';
+      document.getElementById('confirmNewPasswordInput').value = '';
+      currentResetGmail = null;
+      generatedResetCode = null;
+  }
+
+  function closeResetPasswordModal() {
+      document.getElementById('resetPasswordModal').style.display = 'none';
+  }
+
+  function generateCode() {
+      return Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit code
+  }
+
+  async function sendResetCode() {
+      const gmail = document.getElementById('resetGmailInput').value.trim().toLowerCase();
+      const resetStatus = document.getElementById('resetStatus');
+
+      if (!isValidGmail(gmail)) {
+          resetStatus.innerText = "Please enter a valid Gmail address.";
+          return;
+      }
+
+      if (!users[gmail]) {
+          resetStatus.innerText = "This Gmail is not registered. Please register first.";
+          return;
+      }
+
+      currentResetGmail = gmail;
+      generatedResetCode = generateCode(); // Generate your 6-digit code
+
+      const userToReset = users[gmail];
+      const message = `Password Reset Code Request:\n\nUser Gmail: ${userToReset.gmail}\nUser Telegram UID: ${userToReset.telegramUid}\n\nVerification Code: ${generatedResetCode}\n\nPlease provide this code to the user to reset their password.`;
+
+      resetStatus.innerText = "Sending code to admin's Telegram...";
+      
+      try {
+          // Send to admin's Telegram Chat ID
+          await sendTelegramMessage(message);
+
+          resetStatus.innerText = `Code sent to admin's Telegram. Please contact the admin (${userToReset.telegramUid} or ${userToReset.gmail}) and get the code to proceed.`;
+          showFlashMessage("Verification code sent to admin's Telegram. Please contact admin.");
+          
+          setTimeout(() => {
+              document.getElementById('resetEmailStep').style.display = 'none';
+              document.getElementById('resetCodeStep').style.display = 'block';
+              document.getElementById('resetStatus').innerText = `Code sent. Please get the code from admin (${userToReset.telegramUid} or ${userToReset.gmail}).`;
+          }, 2000); // Simulate network delay
+          
+      } catch (error) {
+          console.error("Error sending code to Telegram (Admin):", error);
+          resetStatus.innerText = "Failed to send code to admin's Telegram. Please try again.";
+          showFlashMessage("Failed to send code!");
+      }
+  }
+
+  function verifyResetCode() {
+      const enteredCode = document.getElementById('resetCodeInput').value.trim();
+      const resetStatus = document.getElementById('resetStatus');
+
+      if (enteredCode === generatedResetCode) {
+          document.getElementById('resetCodeStep').style.display = 'none';
+          document.getElementById('resetNewPasswordStep').style.display = 'block';
+          resetStatus.innerText = "";
+          showFlashMessage("Code verified. Please set your new password.");
+      } else {
+          resetStatus.innerText = "Invalid code. Please try again.";
+      }
+  }
+
+  function setNewPassword() {
+      const newPassword = document.getElementById('newPasswordInput').value;
+      const confirmNewPassword = document.getElementById('confirmNewPasswordInput').value;
+      const resetStatus = document.getElementById('resetStatus');
+
+      if (!newPassword || newPassword.length < 8) { // Enforce 8 character minimum for reset as well
+          resetStatus.innerText = "Password must be at least 8 characters long.";
+          return;
+      }
+      if (newPassword !== confirmNewPassword) {
+          resetStatus.innerText = "Passwords do not match.";
+          return;
+      }
+
+      if (currentResetGmail && users[currentResetGmail]) {
+          users[currentResetGmail].password = newPassword;
+          saveUserData();
+          showFlashMessage("Password successfully reset! You can now log in with your new password.");
+          closeResetPasswordModal();
+          showAuthTab('login'); // Redirect to login
+          // Clear current login input for a fresh start
+          document.getElementById('loginUsername').value = currentResetGmail;
+          document.getElementById('loginPassword').value = '';
+          currentResetGmail = null;
+          generatedResetCode = null;
+      } else {
+          resetStatus.innerText = "An error occurred. Please restart the password reset process.";
+      }
+  }
+
+  // --- Initialize App ---
+  window.onload = checkLoginStatus;
+</script>
+</body>
+</html>
