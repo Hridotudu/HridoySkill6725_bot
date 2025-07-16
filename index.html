@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- 
-    <meta name="monetag" content="02f904e45e7467b14d8676fff6f20015">
+  <meta name="monetag" content="601cf70bd190323d55053b88c81fd4c2">
     
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -120,17 +119,37 @@
       display: none; /* Hidden by default, shown after login */
       z-index: 1000; /* Ensure nav is on top of other content */
     }
+    
+    /* NEW: Design for all nav buttons */
     nav button {
-      flex: 1; /* Equal width for all buttons */
+      flex: 1;
       padding: 12px;
       border: none;
       background: none;
-      font-weight: bold;
       color: var(--text-color);
-      font-size: 15px; /* Slightly smaller font for nav items */
+      font-size: 15px;
+      font-weight: 500;
       -webkit-tap-highlight-color: transparent;
+      transition: all 0.3s ease;
+      position: relative;
     }
-    nav button:active { background: rgba(0,0,0,0.05); } /* Light background on active */
+    
+    /* NEW: Design for the currently active/selected button */
+    nav button.active {
+      color: var(--link-color);
+      font-weight: bold;
+    }
+    nav button.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70%;
+      height: 3px;
+      background: var(--link-color);
+      border-radius: 2px;
+    }
 
     /* Info/Status Messages */
     .info {
@@ -393,6 +412,25 @@
         <p class="info" id="screenshot-status"></p>
       </div>
     </div>
+    
+    <div id="roles" class="section">
+      <div class="card">
+        <h3>Roles and Rules</h3>
+        <p>This section outlines the roles and rules for all members of the Hridoy Skill community. Please read carefully to ensure a positive and fair experience for everyone.</p>
+        <h4>Member Roles</h4>
+        <ul>
+          <li><strong>Free Member:</strong> All new users start as Free Members. You can earn by watching ads and completing tasks.</li>
+          <li><strong>Premium Member:</strong> This is a future role. Premium members will have access to exclusive features and higher earning potential.</li>
+        </ul>
+        <h4>General Rules</h4>
+        <ul>
+          <li><strong>Respect:</strong> Be respectful to all members and admins.</li>
+          <li><strong>No Spam:</strong> Do not spam or post irrelevant content in our Telegram group.</li>
+          <li><strong>Fair Play:</strong> Any attempt to cheat or manipulate the system will result in a permanent ban.</li>
+          <li><strong>Withdrawals:</strong> Follow the minimum and maximum withdrawal limits.</li>
+        </ul>
+      </div>
+    </div>
 
     <div id="withdraw" class="section">
       <div class="card">
@@ -423,7 +461,8 @@
         <p>Daily Ads: <strong id="dailyAdsWatchedProfile">0</strong></p>
         <p>Total Tasks: <strong id="tasksCompletedProfile">0</strong></p>
         <p>Total Withdraw: <strong id="withdrawTotal">$0.00</strong></p>
-        <p>Total Referrals: <strong id="totalReferralsProfile">0</strong></p> 
+        <p>Total Referrals: <strong id="totalReferralsProfile">0</strong></p>
+        <button class="btn" onclick="showTab('roles')" style="margin-top: 10px;">View Roles & Rules</button> 
         <p style="margin-top:10px;color:#888;">❤️Developer:Hridoy Skill❤️</p>
         <img src="https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1752401954/w0d4yapthokp30zvta1j.jpg" alt="Meditation Image" style="max-width:100%; height:auto; display:block; margin: 15px auto;">
       </div>
@@ -436,6 +475,7 @@
   <button onclick="showTab('withdraw')">Withdraw</button>
   <button onclick="showTab('contact')">Contact</button>
   <button onclick="showTab('profile')">Profile</button>
+  
 </nav>
 
 <div id="referralModal" class="modal">
@@ -814,9 +854,19 @@
    * @param {string} tabId - The ID of the tab to show (e.g., 'home', 'earn').
    */
   function showTab(tabId) {
+    // Hide all sections
     document.querySelectorAll('#appSections .section').forEach(s => s.classList.remove('active'));
+    // Deactivate all nav buttons
+    document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+
     if (document.getElementById('appSections').style.display === 'block') {
+      // Show the selected section
       document.getElementById(tabId).classList.add('active');
+      // Activate the corresponding nav button
+      const navButton = document.querySelector(`nav button[onclick*="showTab('${tabId}')"]`);
+      if (navButton) {
+        navButton.classList.add('active');
+      }
     }
     updateProfileStats();
   }
