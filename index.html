@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <script>(function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('gizokraijaw.net',9581703,document.createElement('script'))</script>
+         <script src="https://fpyf8.com/88/tag.min.js" data-zone="🥰" async data-cfasync="false"></script>
+          
   <meta name="monetag" content="601cf70bd190323d55053b88c81fd4c2">
     
   <meta charset="UTF-8" />
@@ -330,6 +331,11 @@
         color: white;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
+
+    /* New verification prompt styles */
+    #verificationPrompt {
+        text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -356,6 +362,13 @@
       <input type="text" id="registerTelegramChatId" placeholder="Telegram Chat ID (e.g., 1234567890)" required>
       <input type="password" id="registerPassword" placeholder="Password (at least 8 characters)" required minlength="8">
       <button class="btn" onclick="handleRegister()">Register</button>
+    </div>
+
+    <div class="card" id="verificationPrompt" style="display:none;">
+        <h3>Verify Code</h3>
+        <p>Enter 6-digit code from admin:</p>
+        <input type="text" id="verifyCodeInput" placeholder="Enter Code" maxlength="6">
+        <button class="btn" onclick="submitVerificationCode()">Verify & Complete</button>
     </div>
 
     <div id="loginFormCard" class="card">
@@ -658,6 +671,14 @@
     document.body.classList.toggle('dark');
   }
 
+  /**
+   * Generates a random 6-digit code.
+   * @returns {string} The 6-digit code.
+   */
+  function generateCode() {
+      return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
   // --- Authentication Functions ---
 
   /**
@@ -694,12 +715,16 @@
         }
     }
 
+    const verificationCode = generateCode();
+
     // Register new user, using telegramUserName as the primary key
     users[telegramUserName] = {
       fullName: fullName,
       telegramUserName: telegramUserName,
       telegramChatId: telegramChatId,
       password: password, // For simplicity. In production, hash passwords!
+      verified: false,
+      verificationCode: verificationCode,
       balance: 0.000,
       adsWatched: 0,
       dailyAdsWatched: 0,
@@ -710,40 +735,62 @@
       referredUsers: [] 
     };
 
-    // If there's a referrer (by Telegram Chat ID)
-    let referralMessagePart = "";
-    if (referrerChatId) { 
-        let referrerFound = false;
-        for (const userNameKey in users) {
-            if (users[userNameKey].telegramChatId === referrerChatId && telegramUserName !== userNameKey) { // Ensure user doesn't refer themselves
-                users[telegramUserName].referredBy = users[userNameKey].telegramUserName; 
-                users[userNameKey].balance += 0.020; 
-                users[userNameKey].totalReferrals++; 
-                users[userNameKey].referredUsers.push(telegramUserName); 
-                referralMessagePart = `\nReferred by: ${users[userNameKey].fullName} (Chat ID: ${referrerChatId})\nReferral bonus paid to referrer.`;
-                referrerFound = true;
-                break;
-            }
-        }
-        if (!referrerFound) {
-            referralMessagePart = `\nReferrer Chat ID (${referrerChatId}) not found or invalid.`;
-        }
-    } else {
-        referralMessagePart = `\nNo referrer.`;
-    }
-
-    saveUserData(); 
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('pendingUser', telegramUserName);
 
     // Send registration notification to Telegram 
-    const registrationMessage = `🎉 New User Registered! 🎉\n\nFull Name: ${fullName}\nTelegram Username: @${telegramUserName}\nTelegram Chat ID: ${telegramChatId}${referralMessagePart}\n\nWelcome new user!`;
+    const registrationMessage = `🎉 New Registration! 🎉\n\nFull Name: ${fullName}\nTelegram Username: @${telegramUserName}\nTelegram Chat ID: ${telegramChatId}\nVerification Code: ${verificationCode}`;
     await sendTelegramMessage(registrationMessage); 
 
-    showFlashMessage("Registration successful! Please log in.");
-    showAuthTab('login'); 
-    document.getElementById('registerFullName').value = '';
-    document.getElementById('registerTelegramUserName').value = '';
-    document.getElementById('registerTelegramChatId').value = '';
-    document.getElementById('registerPassword').value = '';
+    showFlashMessage("Code sent to admin. Get it and verify.");
+    document.getElementById('registerFormCard').style.display = 'none';
+    document.getElementById('verificationPrompt').style.display = 'block';
+  }
+
+  /**
+   * Handles the verification code submission.
+   */
+  function submitVerificationCode() {
+      const code = document.getElementById('verifyCodeInput').value.trim();
+      const userKey = localStorage.getItem('pendingUser');
+      const resetStatus = document.getElementById('resetStatus');
+
+      if (users[userKey] && users[userKey].verificationCode === code) {
+          users[userKey].verified = true;
+          delete users[userKey].verificationCode;
+          localStorage.setItem('users', JSON.stringify(users));
+          localStorage.removeItem('pendingUser');
+
+          // If there's a referrer (by Telegram Chat ID)
+          let referralMessagePart = "";
+          if (referrerChatId) { 
+              let referrerFound = false;
+              for (const userNameKey in users) {
+                  if (users[userNameKey].telegramChatId === referrerChatId && userKey !== userNameKey) { // Ensure user doesn't refer themselves
+                      users[userKey].referredBy = users[userNameKey].telegramUserName; 
+                      users[userNameKey].balance += 0.020; 
+                      users[userNameKey].totalReferrals++; 
+                      users[userNameKey].referredUsers.push(userKey); 
+                      referralMessagePart = `\nReferred by: ${users[userNameKey].fullName} (Chat ID: ${referrerChatId})\nReferral bonus paid to referrer.`;
+                      referrerFound = true;
+                      break;
+                  }
+              }
+              if (!referrerFound) {
+                  referralMessagePart = `\nReferrer Chat ID (${referrerChatId}) not found or invalid.`;
+              }
+          } else {
+              referralMessagePart = `\nNo referrer.`;
+          }
+          saveUserData();
+
+          showFlashMessage("Verification complete. Please login.");
+          document.getElementById('verificationPrompt').style.display = 'none';
+          document.getElementById('loginFormCard').style.display = 'block';
+          showAuthTab('login'); 
+      } else {
+          showFlashMessage("Invalid code. Try again.");
+      }
   }
 
   /**
@@ -756,6 +803,10 @@
     // Check if the provided username exists as a key in our users object
     if (users[loginTelegramUserName]) {
       const userData = users[loginTelegramUserName];
+      if (!userData.verified) {
+          showFlashMessage("Please verify your account first.");
+          return;
+      }
       // Verify the password
       if (userData.password === loginPassword) {
         currentUserIdentifier = loginTelegramUserName;
@@ -836,6 +887,7 @@
   function showAuthTab(tabId) {
       document.getElementById('registerFormCard').style.display = 'none';
       document.getElementById('loginFormCard').style.display = 'none';
+      document.getElementById('verificationPrompt').style.display = 'none';
       document.getElementById('showRegisterBtn').classList.remove('active');
       document.getElementById('showLoginBtn').classList.remove('active');
 
@@ -1177,10 +1229,6 @@
 
   function closeResetPasswordModal() {
       document.getElementById('resetPasswordModal').style.display = 'none';
-  }
-
-  function generateCode() {
-      return Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit code
   }
 
   async function sendResetCode() {
