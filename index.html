@@ -353,9 +353,36 @@
         <button id="showRegisterBtn" onclick="showAuthTab('register')">Register</button>
         <button id="showLoginBtn" class="active" onclick="showAuthTab('login')">Login</button>
     </div>
-    <button class="btn" onclick="showTab('roles')" style="margin-top: 10px;">View Roles & Rules</button>
+    
+
+    <div id="registerFormCard" class="card" style="display:none;">
+      <h3>Register</h3>
+      <p>Create your new account using your Telegram info and a password.</p>
+      <input type="text" id="registerFullName" placeholder="Full Name" required>
+      <input type="text" id="registerTelegramUserName" placeholder="Telegram Username (e.g., @your_username)" required>
+      <input type="text" id="registerTelegramChatId" placeholder="Telegram Chat ID (e.g., 1234567890)" required>
+      <input type="password" id="registerPassword" placeholder="Password (at least 8 characters)" required minlength="8">
+      <button class="btn" onclick="handleRegister()">Register</button>
+    </div>
+
+    <div class="card" id="verificationPrompt" style="display:none;">
+        <h3>Verify Code</h3>
+        <p>Enter 6-digit code from Owners:</p>
+        <input type="text" id="verifyCodeInput" placeholder="Enter Code" maxlength="6">
+        <button class="btn" onclick="submitVerificationCode()">Verify & Complete</button>
+    </div>
+
+    <div id="loginFormCard" class="card">
+      <h3>Login</h3>
+      <p>Log in using your Telegram
+      username and password.</p>
+      <input type="text" id="loginTelegramUserName" placeholder="Telegram Username (e.g., @your_username)" required>
+      <input type="password" id="loginPassword" placeholder="Password" required>
+      <button class="btn" onclick="handleLogin()">Login</button>
+      <button class="btn" onclick="showResetPasswordModal()">Reset Password</button>
+      <button class="btn" onclick="showTab('roles')" style="margin-top: 10px;">Roles & Rules</button>
     <div class="card">
-        <h3> Roles and Rules ¨C Hridoy Skill Community </h3>
+        <h3> Roles and Rules (Hridoy Skill Community) </h3>
         <p>
           Here are the roles and rules for all members of the Hridoy Skill community. Please read carefully to ensure a positive and fair environment.
         </p>
@@ -410,32 +437,6 @@
         <p>Thank you all. If you follow the rules, everyone will benefit.</p>
       </div>
     </div>
-
-    <div id="registerFormCard" class="card" style="display:none;">
-      <h3>Register</h3>
-      <p>Create your new account using your Telegram info and a password.</p>
-      <input type="text" id="registerFullName" placeholder="Full Name" required>
-      <input type="text" id="registerTelegramUserName" placeholder="Telegram Username (e.g., @your_username)" required>
-      <input type="text" id="registerTelegramChatId" placeholder="Telegram Chat ID (e.g., 1234567890)" required>
-      <input type="password" id="registerPassword" placeholder="Password (at least 8 characters)" required minlength="8">
-      <button class="btn" onclick="handleRegister()">Register</button>
-    </div>
-
-    <div class="card" id="verificationPrompt" style="display:none;">
-        <h3>Verify Code</h3>
-        <p>Enter 6-digit code from Owners:</p>
-        <input type="text" id="verifyCodeInput" placeholder="Enter Code" maxlength="6">
-        <button class="btn" onclick="submitVerificationCode()">Verify & Complete</button>
-    </div>
-
-    <div id="loginFormCard" class="card">
-      <h3>Login</h3>
-      <p>Log in using your Telegram
-      username and password.</p>
-      <input type="text" id="loginTelegramUserName" placeholder="Telegram Username (e.g., @your_username)" required>
-      <input type="password" id="loginPassword" placeholder="Password" required>
-      <button class="btn" onclick="handleLogin()">Login</button>
-      <button class="btn" onclick="showResetPasswordModal()">Reset Password</button>
     </div>
   </div>
 
