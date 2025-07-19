@@ -380,7 +380,7 @@
       <input type="password" id="loginPassword" placeholder="Password" required>
       <button class="btn" onclick="handleLogin()">Login</button>
       <button class="btn" onclick="showResetPasswordModal()">Reset Password</button>
-      <button class="btn" onclick="showTab('roles')" style="margin-top: 10px;">Roles & Rules</button>
+      <button class="btn" onclick="showRolesFromLogin()" style="margin-top: 10px;">Roles & Rules</button>
     </div>
   </div>
 
@@ -432,8 +432,7 @@
     
     <div id="roles" class="section">
       <div class="card">
-        <h3>Roles and Rules 
-        Hridoy Skill Community </h3>
+        <h3>📜 Roles and Rules – Hridoy Skill Community 📜</h3>
         <p>
           Here are the roles and rules for all members of the Hridoy Skill community. Please read carefully to ensure a positive and fair environment.
         </p>
@@ -486,6 +485,7 @@
         </ul>
 
         <p>Thank you all. If you follow the rules, everyone will benefit.</p>
+        <button class="btn" onclick="window.history.back()" style="margin-top: 20px;">Back</button>
       </div>
     </div>
 
@@ -948,6 +948,19 @@
           document.getElementById('showLoginBtn').classList.add('active');
       }
   }
+  
+  /**
+   * Shows the Roles & Rules section from the login page.
+   */
+  function showRolesFromLogin() {
+    document.getElementById('auth').style.display = 'none';
+    document.getElementById('appSections').style.display = 'block';
+    document.querySelector('nav').style.display = 'none';
+    showTab('roles');
+  }
+
+  // NOTE: The `hideRolesAndShowLogin` function is now removed.
+  // The 'Back' button now uses `window.history.back()` directly.
 
   // --- App Section & Stats Display Functions ---
 
