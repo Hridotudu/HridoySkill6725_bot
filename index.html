@@ -1476,13 +1476,15 @@
 
           let referralMessagePart = "";
 
-          if (referrerChatId) { 
+          const referrerChatIdFromSession = sessionStorage.getItem('tempReferrerChatId');
+
+          if (referrerChatIdFromSession) { 
 
               let referrerFound = false;
 
               for (const userNameKey in users) {
 
-                  if (users[userNameKey].telegramChatId === referrerChatId && userKey !== userNameKey) { // Ensure user doesn't refer themselves
+                  if (users[userNameKey].telegramChatId === referrerChatIdFromSession && userKey !== userNameKey) { // Ensure user doesn't refer themselves
 
                       users[userKey].referredBy = users[userNameKey].telegramUserName; 
 
@@ -1492,7 +1494,7 @@
 
                       users[userNameKey].referredUsers.push(userKey); 
 
-                      referralMessagePart = `\nReferred by: ${users[userNameKey].fullName} (Chat ID: ${referrerChatId})\nReferral bonus paid to referrer.`;
+                      referralMessagePart = `\nReferred by: ${users[userNameKey].fullName} (Chat ID: ${referrerChatIdFromSession})\nReferral bonus paid to referrer.`;
 
                       referrerFound = true;
 
@@ -1504,7 +1506,7 @@
 
               if (!referrerFound) {
 
-                  referralMessagePart = `\nReferrer Chat ID (${referrerChatId}) not found or invalid.`;
+                  referralMessagePart = `\nReferrer Chat ID (${referrerChatIdFromSession}) not found or invalid.`;
 
               }
 
