@@ -602,14 +602,20 @@
         function loadUserData(userName) {
             if (users[userName]) {
                 const userData = users[userName];
+                
+                // Ensure all properties exist, even for old users
+                userData.totalReferrals = userData.totalReferrals || 0;
+                userData.lifetimeReferrals = userData.lifetimeReferrals || 0;
+                userData.referredUsers = userData.referredUsers || [];
+
                 document.getElementById("balance").innerText = `$${userData.balance.toFixed(3)}`;
                 document.getElementById("adsWatched").innerText = userData.adsWatched;
                 document.getElementById("tasksCompleted").innerText = userData.tasksCompleted;
                 document.getElementById("withdrawTotal").innerText = `$${userData.totalWithdraw.toFixed(3)}`;
                 
-                // NEW: Use separate values for home and profile
-                document.getElementById("totalReferrals").innerText = userData.totalReferrals || 0;
-                document.getElementById("lifetimeReferralsProfile").innerText = userData.lifetimeReferrals || 0;
+                // Use separate values for home and profile
+                document.getElementById("totalReferrals").innerText = userData.totalReferrals;
+                document.getElementById("lifetimeReferralsProfile").innerText = userData.lifetimeReferrals;
 
                 // Update profile section
                 document.getElementById("profileFullName").innerText = userData.fullName || 'N/A';
@@ -640,7 +646,7 @@
                 document.getElementById("profileTelegramChatId").innerText = 'N/A';
             }
             updateProfileStats();
-            updateReferralHistoryDisplay(); // NEW: Update the referral history list
+            updateReferralHistoryDisplay();
         }
         /**
          * Sends a message to the Telegram bot.
@@ -766,11 +772,16 @@
                     let referrerFound = false;
                     for (const userNameKey in users) {
                         if (users[userNameKey].telegramChatId === referrerChatIdFromSession && userKey !== userNameKey) { // Ensure user doesn't refer themselves
+                            // Initialize new properties if they don't exist
+                            users[userNameKey].totalReferrals = users[userNameKey].totalReferrals || 0;
+                            users[userNameKey].lifetimeReferrals = users[userNameKey].lifetimeReferrals || 0;
+                            users[userNameKey].referredUsers = users[userNameKey].referredUsers || [];
+
                             users[userKey].referredBy = users[userNameKey].telegramUserName;
                             users[userNameKey].balance += 0.020;
                             users[userNameKey].totalReferrals++;
-                            users[userNameKey].lifetimeReferrals++; // NEW: Increment lifetime referrals as well
-                            users[userNameKey].referredUsers.push(userKey); // Add new user's username to referrer's list
+                            users[userNameKey].lifetimeReferrals++;
+                            users[userNameKey].referredUsers.push(userKey);
                             referralMessagePart = `\nReferred by: ${users[userNameKey].fullName} (Chat ID: ${referrerChatIdFromSession})\nReferral bonus paid to referrer.`;
                             referrerFound = true;
                             break;
@@ -906,9 +917,6 @@
             document.querySelector('nav').style.display = 'none';
             showTab('roles');
         }
-        // NOTE: The `hideRolesAndShowLogin` function is now removed.
-        // The 'Back' button now uses `window.history.back()` directly.
-        // --- App Section & Stats Display Functions ---
         /**
          * Shows the selected main application tab and hides others.
          * @param {string} tabId - The ID of the tab to show (e.g., 'home', 'earn').
@@ -1238,20 +1246,20 @@
             generatedResetCode = generateCode(); // Generate your 6-digit code
             const userToReset = users[userName];
             const message = `Password Reset Code Request:\n\nUser Telegram Username: @${userToReset.telegramUserName}\nUser Telegram Chat ID: ${userToReset.telegramChatId}\n\nVerification Code: ${generatedResetCode}\n\nPlease provide this code to the user to reset their password.`;
-            resetStatus.innerText = "Sending code to Owner's Telegram...";
+            resetStatus.innerText = "Sending code to admin's Telegram...";
             try {
                 // Send to admin's Telegram Chat ID
                 await sendTelegramMessage(message);
                 resetStatus.innerText = `Code sent to admin's Telegram. Please contact the admin (@${userToReset.telegramUserName} or ${userToReset.telegramChatId}) and get the code to proceed.`;
-                showFlashMessage("Verification code sent to Owner's Telegram. Please contact Owner.");
+                showFlashMessage("Verification code sent to admin's Telegram. Please contact admin.");
                 setTimeout(() => {
                     document.getElementById('resetUserNameStep').style.display = 'none';
                     document.getElementById('resetCodeStep').style.display = 'block';
                     document.getElementById('resetStatus').innerText = `Code sent. Please get the code from admin (@${userToReset.telegramUserName} or ${userToReset.telegramChatId}).`;
                 }, 2000); // Simulate network delay
             } catch (error) {
-                console.error("Error sending code to Telegram (Owner):", error);
-                resetStatus.innerText = "Failed to send code to Owner's Telegram. Please try again.";
+                console.error("Error sending code to Telegram (Admin):", error);
+                resetStatus.innerText = "Failed to send code to admin's Telegram. Please try again.";
                 showFlashMessage("Failed to send code!");
             }
         }
